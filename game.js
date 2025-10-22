@@ -1,4 +1,4 @@
-// Canvas Asteroids
+// Canvas Cats
 //
 // Copyright (c) 2010 Doug McInnes
 //
@@ -381,7 +381,7 @@ Ship = function () {
 
   this.postMove = this.wrapPostMove;
 
-  this.collidesWith = ["asteroid", "bigalien", "alienbullet"];
+  this.collidesWith = ["cat", "bigalien", "alienbullet"];
 
   this.preMove = function (delta) {
     if (KEY_STATUS.left) {
@@ -475,7 +475,7 @@ BigAlien = function () {
                              -8, 4]);
   this.children.bottom.visible = true;
 
-  this.collidesWith = ["asteroid", "ship", "bullet"];
+  this.collidesWith = ["cat", "ship", "bullet"];
 
   this.bridgesH = false;
 
@@ -578,9 +578,9 @@ Bullet = function () {
   this.bridgesH = false;
   this.bridgesV = false;
   this.postMove = this.wrapPostMove;
-  // asteroid can look for bullets so doesn't have
+  // cat can look for bullets so doesn't have
   // to be other way around
-  //this.collidesWith = ["asteroid"];
+  //this.collidesWith = ["cat"];
 
   this.configureTransform = function () {};
   this.draw = function () {
@@ -636,17 +636,21 @@ AlienBullet = function () {
 AlienBullet.prototype = new Bullet();
 
 Asteroid = function () {
-  this.init("asteroid",
-            [-10,   0,
-              -5,   7,
-              -3,   4,
-               1,  10,
-               5,   4,
-              10,   0,
-               5,  -6,
-               2, -10,
-              -4, -10,
-              -4,  -5]);
+  this.init("cat",
+            [-10,  -8,  // left ear tip
+              -6,  -5,  // left ear base
+              -8,   0,  // left side of head
+              -7,   5,  // left cheek
+              -3,   8,  // chin left
+               0,   9,  // chin center
+               3,   8,  // chin right
+               7,   5,  // right cheek
+               8,   0,  // right side of head
+               6,  -5,  // right ear base
+              10,  -8,  // right ear tip
+               5,  -6,  // between ears
+               0,  -4,  // top of head
+              -5,  -6]);
 
   this.visible = true;
   this.scale = 6;
@@ -870,7 +874,7 @@ SFX.muted = true;
 
 Game = {
   score: 0,
-  totalAsteroids: 5,
+  totalCats: 5,
   lives: 0,
 
   canvasWidth: 800,
@@ -883,8 +887,8 @@ Game = {
   nextBigAlienTime: null,
 
 
-  spawnAsteroids: function (count) {
-    if (!count) count = this.totalAsteroids;
+  spawnCats: function (count) {
+    if (!count) count = this.totalCats;
     for (var i = 0; i < count; i++) {
       var roid = new Asteroid();
       roid.x = Math.random() * this.canvasWidth;
@@ -913,7 +917,7 @@ Game = {
 
   FSM: {
     boot: function () {
-      Game.spawnAsteroids(5);
+      Game.spawnCats(5);
       this.state = 'waiting';
     },
     waiting: function () {
@@ -926,7 +930,7 @@ Game = {
     },
     start: function () {
       for (var i = 0; i < Game.sprites.length; i++) {
-        if (Game.sprites[i].name == 'asteroid') {
+        if (Game.sprites[i].name == 'cat') {
           Game.sprites[i].die();
         } else if (Game.sprites[i].name == 'bullet' ||
                    Game.sprites[i].name == 'bigalien') {
@@ -936,8 +940,8 @@ Game = {
 
       Game.score = 0;
       Game.lives = 2;
-      Game.totalAsteroids = 2;
-      Game.spawnAsteroids();
+      Game.totalCats = 2;
+      Game.spawnCats();
 
       Game.nextBigAlienTime = Date.now() + 30000 + (30000 * Math.random());
 
@@ -956,7 +960,7 @@ Game = {
     },
     run: function () {
       for (var i = 0; i < Game.sprites.length; i++) {
-        if (Game.sprites[i].name == 'asteroid') {
+        if (Game.sprites[i].name == 'cat') {
           break;
         }
       }
@@ -973,12 +977,12 @@ Game = {
       if (this.timer == null) {
         this.timer = Date.now();
       }
-      // wait a second before spawning more asteroids
+      // wait a second before spawning more cats
       if (Date.now() - this.timer > 1000) {
         this.timer = null;
-        Game.totalAsteroids++;
-        if (Game.totalAsteroids > 12) Game.totalAsteroids = 12;
-        Game.spawnAsteroids();
+        Game.totalCats++;
+        if (Game.totalCats > 12) Game.totalCats = 12;
+        Game.spawnCats();
         this.state = 'run';
       }
     },
